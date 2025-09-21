@@ -1,0 +1,31 @@
+# Handle line endings consistently
+* text=auto
+
+# Python files - always use LF for consistency
+*.py text eol=lf
+
+# Requirements and config files
+requirements.txt text eol=lf
+*.toml text eol=lf
+
+# Documentation
+*.md text eol=lf
+
+# Binary files - Git won’t try to normalize line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.docx binary
+
+# SQLite DB files should be treated as binary
+*.db binary
+
+# Ignore OneDrive/Windows temp files from diffing
+*.lnk binary
+*.tmp binary
+*.log text eol=lf
+
+# Force utf-8 encoding for code files
+*.py text working-tree-encoding=UTF-8
