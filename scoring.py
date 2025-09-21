@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF
+import fitz  
 import docx2txt
 import spacy
 import random
@@ -26,7 +26,7 @@ def score_resume(resume_path, jd_path):
     resume_text = extract_text(resume_path)
     jd_text = extract_text(jd_path)
 
-    # Token-based hard match
+   
     jd_doc = nlp(jd_text.lower())
     resume_doc = nlp(resume_text.lower())
 
@@ -34,18 +34,18 @@ def score_resume(resume_path, jd_path):
     resume_tokens = {token.text for token in resume_doc if token.is_alpha and token.text not in STOP_WORDS}
 
     common_tokens = jd_tokens.intersection(resume_tokens)
-    # Increased hard score weight
+   
     hard_score_weight = 0.4
     hard_score = len(common_tokens) / max(len(jd_tokens), 1) * 100 * hard_score_weight
 
-    # Semantic match
+  
     resume_emb = embed_model.encode(resume_text, convert_to_tensor=True)
     jd_emb = embed_model.encode(jd_text, convert_to_tensor=True)
-    # Increased semantic score weight
+    
     sem_score_weight = 0.5
     sem_score = float(util.cos_sim(resume_emb, jd_emb)[0][0]) * 100 * sem_score_weight
 
-    # Content bonus based on matched skills, certifications, and projects
+
     all_skills = {
         "python", "sql", "machine learning", "data analysis", "nlp", "power bi", "excel", "tableau",
         "tensorflow", "keras", "pytorch", "scikit-learn", "pandas", "numpy", "matplotlib", "seaborn",
@@ -61,19 +61,18 @@ def score_resume(resume_path, jd_path):
         "sentiment analysis", "predictive modeling", "churn prediction", "stock price forecasting", "image classification"
     }
 
-    # Count matched content items
+
     matched_skills = resume_tokens.intersection(all_skills)
     matched_certifications = resume_tokens.intersection(all_certifications)
     matched_projects = resume_tokens.intersection(all_projects)
-    
-    # Calculate a bonus score for content matches
+
     content_bonus_weight = 0.3
     content_bonus = (len(matched_skills) / max(len(all_skills), 1) + len(matched_certifications) / max(len(all_certifications), 1) + len(matched_projects) / max(len(all_projects), 1)) / 3 * 100 * content_bonus_weight
 
-    # Adjusted total score formula for a higher baseline
+  
     total_score = min(hard_score + sem_score + content_bonus, 100.0)
 
-    # Adjusted thresholds to be more lenient
+
     if total_score >= 30:
         verdict = "Strong Match"
     elif total_score >= 22:
@@ -81,7 +80,6 @@ def score_resume(resume_path, jd_path):
     else:
         verdict = "Weak Match"
 
-    # Compile the categorized missing items
     missing_keywords = jd_tokens - resume_tokens
 
     missing_skills = list(missing_keywords.intersection(all_skills))
