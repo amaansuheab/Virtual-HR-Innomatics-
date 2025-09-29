@@ -9,7 +9,9 @@ import requests
 import streamlit as st
 import hashlib
 from database import get_conn, create_user, get_user, init_db
+API_BASE = "http://127.0.0.1:8000"
 
+init_db()
 
 
 st.set_page_config(page_title="INNOMATICS RESEARCH LABS – Resume Relevance", layout="wide")
